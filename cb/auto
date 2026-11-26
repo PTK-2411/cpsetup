@@ -10,15 +10,17 @@ RELEASE_BASE_URL="${CPSETUP_RELEASE_URL:-https://github.com/PTK-2411/cpsetup/rel
 LOCAL_MODE=0
 DRY_RUN=0
 RUN_CHECK=0
+OFFLINE_MODE=0
 
 for arg in "$@"; do
     case "$arg" in
         --local) LOCAL_MODE=1 ;;
         --dry-run) DRY_RUN=1 ;;
         --check) RUN_CHECK=1 ;;
+        --offline) OFFLINE_MODE=1; LOCAL_MODE=1 ;;
         -h|--help)
             echo "CPSetup Code::Blocks Auto Installer"
-            echo "Usage: bash cb/auto [--local] [--dry-run] [--check]"
+            echo "Usage: bash cb/auto [--local] [--offline] [--dry-run] [--check]"
             exit 0
             ;;
         *)
@@ -125,6 +127,22 @@ install_linux_deb() {
     trap 'rm -rf "${tmp_dir:-}"' RETURN
 
     local pkg_name="linux${bits}.deb"
+    local offline_tgz="${SCRIPT_DIR:-}/linux${bits}-offline.tar.gz"
+
+    if [ "$LOCAL_MODE" -eq 1 ] && [ -n "$SCRIPT_DIR" ] && [ -f "$offline_tgz" ] && [ "$OFFLINE_MODE" -eq 1 ]; then
+        echo "[CPSetup] Che do USB offline: $offline_tgz"
+        if [ "$DRY_RUN" -eq 1 ]; then
+            echo "[CPSetup] (--dry-run) Bo qua buoc giai nen & install-offline.sh."
+            return 0
+        fi
+        tar -xzf "$offline_tgz" -C "$tmp_dir"
+        bash "$tmp_dir/cpsetup-cb-linux${bits}-offline/install-offline.sh"
+        if [ "$RUN_CHECK" -eq 1 ] && command -v cpsetup-cb-check >/dev/null 2>&1; then
+            cpsetup-cb-check
+        fi
+        return 0
+    fi
+
     local deb_path
     deb_path="$(resolve_package "$pkg_name" "bash \"$SCRIPT_DIR/src/linux-deb/build-deb.sh\" \"$bits\"" "$tmp_dir")"
 
