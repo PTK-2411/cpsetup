@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CPSetup — Chuẩn hóa môi trường lập trình thi đấu C++17</title>
+  <title>Competitive Programming Setup — Chuẩn hóa môi trường lập trình thi đấu C++17</title>
+  <link rel="icon" type="image/svg+xml" href="./cplusplus.svg" />
   <meta name="description" content="Bộ cài đặt chuẩn hóa môi trường lập trình thi đấu C++17 (-std=c++17 -O2) cho Windows, Linux và macOS." />
   <style>
     :root {
@@ -72,18 +73,11 @@
       color: var(--text);
     }
 
-    .brand-badge {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
+    .brand-logo {
       width: 36px;
       height: 36px;
-      border-radius: 10px;
-      background: var(--accent);
-      color: #ffffff;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      font-weight: 900;
-      font-size: 0.95rem;
+      display: block;
+      flex-shrink: 0;
     }
 
     .nav-links {
@@ -380,8 +374,8 @@
   <div class="container">
     <header>
       <div class="brand">
-        <span class="brand-badge">C++</span>
-        <span>CPSetup</span>
+        <img class="brand-logo" src="./cplusplus.svg" alt="C++ Logo" />
+        <span>Competitive Programming Setup</span>
       </div>
       <nav class="nav-links">
         <a href="https://github.com/PTK-2411/cpsetup" target="_blank" rel="noopener">GitHub</a>
@@ -457,7 +451,7 @@
       </div>
     </section>
 
-    <h2 class="section-title">Tải trực tiếp bộ cài (Copy vào USB / Tải thủ công)</h2>
+    <h2 class="section-title">Tải trực tiếp bộ cài (Offline)</h2>
     <section class="download-grid" aria-label="Tải trực tiếp các file cài đặt">
       <a class="dl-btn" href="./cb/linux64.deb" download>
         <span class="dl-name">cb/linux64.deb</span>
@@ -501,7 +495,7 @@
       </a>
     </section>
 
-    <h2 class="section-title">Các nhánh công cụ trong CPSetup</h2>
+    <h2 class="section-title">Các nhánh công cụ trong Competitive Programming Setup</h2>
     <section class="grid">
       <article class="card">
         <div class="card-top">
