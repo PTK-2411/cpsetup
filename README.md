@@ -60,3 +60,7 @@ Script sẽ tự nhận diện `win32` hoặc `win64`, hỗ trợ tải resume (
 
 ## Lưu trữ gói nhị phân trên GitHub Releases
 - File nặng (`cb-linux64.deb`, `cb-linux32.deb`, `cb-linux64.rpm`, `cb-linux32.rpm`, `cb-linux64.tar.gz`, `cb-linux32.tar.gz`, `cb-win64.exe`, `cb-win32.exe`) upload lên **GitHub Releases** (`releases/latest/download/...`), không commit vào Git.
+
+## License
+- Mã nguồn, script và tệp cấu hình của dự án này được phát hành theo giấy phép [MIT License](LICENSE).
+- Các công cụ cài đặt đi kèm (`g++`, `gdb`, `Code::Blocks`) thuộc quyền sở hữu và giấy phép mã nguồn mở/GPL tương ứng của từng dự án.
