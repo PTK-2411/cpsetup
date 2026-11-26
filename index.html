@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CPSetup — Chuẩn hóa môi trường lập trình thi đấu C++17</title>
+  <meta name="description" content="Bộ cài đặt chuẩn hóa môi trường lập trình thi đấu C++17 (-std=c++17 -O2) cho Windows, Linux và macOS." />
+  <style>
+    :root {
+      --bg: #0b1020;
+      --bg-card: #121a2f;
+      --bg-code: #090d19;
+      --border: #243154;
+      --text: #e6ecf8;
+      --muted: #9aa7c7;
+      --accent: #38bdf8;
+      --accent-2: #818cf8;
+      --success: #22c55e;
+      --warn: #f59e0b;
+      --radius: 14px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, Helvetica, Arial, sans-serif;
+      background:
+        radial-gradient(900px 500px at 15% -10%, rgba(56, 189, 248, 0.14), transparent 60%),
+        radial-gradient(800px 450px at 90% 0%, rgba(129, 140, 248, 0.14), transparent 60%),
+        var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .container {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 48px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      font-size: 1.25rem;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #06101f;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-weight: 900;
+      font-size: 0.95rem;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 18px;
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
+
+    .nav-links a {
+      color: var(--muted);
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+    }
+
+    .hero {
+      text-align: center;
+      margin-bottom: 44px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(18, 26, 47, 0.85);
+      color: var(--accent);
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 5vw, 3.1rem);
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+      margin-bottom: 16px;
+    }
+
+    .gradient-text {
+      background: linear-gradient(135deg, #f8fafc 20%, var(--accent) 70%, var(--accent-2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      max-width: 680px;
+      margin: 0 auto;
+      color: var(--muted);
+      font-size: 1.06rem;
+    }
+
+    .install-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+      margin-bottom: 40px;
+    }
+
+    .install-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .install-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+    }
+
+    .tabs {
+      display: inline-flex;
+      background: var(--bg-code);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 4px;
+      gap: 4px;
+    }
+
+    .tab-btn {
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      padding: 8px 16px;
+      border-radius: 7px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .tab-btn:hover {
+      color: var(--text);
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(129, 140, 248, 0.2));
+      color: var(--text);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+    }
+
+    .panel {
+      display: none;
+    }
+
+    .panel.active {
+      display: block;
+    }
+
+    .cmd-box {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: var(--bg-code);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-bottom: 14px;
+      overflow-x: auto;
+    }
+
+    .cmd-box code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.9rem;
+      color: #dbeafe;
+      white-space: nowrap;
+    }
+
+    .copy-btn {
+      flex-shrink: 0;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text);
+      padding: 7px 13px;
+      border-radius: 8px;
+      font-size: 0.84rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+
+    .copy-btn:hover {
+      border-color: var(--accent);
+    }
+
+    .copy-btn.copied {
+      border-color: var(--success);
+      color: var(--success);
+    }
+
+    .sub-cmds {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .notes {
+      margin-top: 14px;
+      padding-left: 18px;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .notes li + li {
+      margin-top: 6px;
+    }
+
+    .notes code {
+      background: var(--bg-code);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 1px 6px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.85em;
+      color: var(--text);
+    }
+
+    .section-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .card-code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--accent);
+    }
+
+    .status {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 999px;
+    }
+
+    .status.ready {
+      background: rgba(34, 197, 94, 0.14);
+      color: var(--success);
+      border: 1px solid rgba(34, 197, 94, 0.35);
+    }
+
+    .status.soon {
+      background: rgba(245, 158, 11, 0.12);
+      color: var(--warn);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .card h3 {
+      font-size: 1.02rem;
+      margin-bottom: 6px;
+    }
+
+    .card p {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding-top: 22px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <span class="brand-badge">C++</span>
+        <span>CPSetup</span>
+      </div>
+      <nav class="nav-links">
+        <a href="https://github.com/PTK-2411/cpsetup" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://github.com/PTK-2411/cpsetup/releases" target="_blank" rel="noopener">Releases</a>
+        <a href="https://github.com/PTK-2411/cpsetup/blob/main/LICENSE" target="_blank" rel="noopener">MIT License</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <div class="pill">Chuẩn thi đấu mặc định: C++17 (-std=c++17 -O2)</div>
+      <h1><span class="gradient-text">Cài đặt môi trường C++ thi đấu</span><br />chỉ với một dòng lệnh</h1>
+      <p>
+        Tự động nhận diện hệ điều hành và kiến trúc 32/64-bit, cài đặt đầy đủ <strong>g++</strong>, <strong>gdb</strong> và IDE chuẩn cấu hình cho học sinh luyện thi lập trình thi đấu trên Windows, Linux và macOS.
+      </p>
+    </section>
+
+    <section class="install-card" aria-label="Cài đặt nhanh nhánh Code::Blocks">
+      <div class="install-header">
+        <div class="install-title">Nhánh <code>/cb</code> — Code::Blocks + g++ + gdb (C++17)</div>
+        <div class="tabs" role="tablist">
+          <button class="tab-btn active" data-os="linux" role="tab">Linux</button>
+          <button class="tab-btn" data-os="macos" role="tab">macOS</button>
+          <button class="tab-btn" data-os="windows" role="tab">Windows</button>
+        </div>
+      </div>
+
+      <!-- Linux -->
+      <div class="panel active" id="panel-linux">
+        <div class="cmd-box">
+          <code id="cmd-linux">curl -fsSL https://raw.githubusercontent.com/PTK-2411/cpsetup/main/cb/auto | bash</code>
+          <button class="copy-btn" data-copy="cmd-linux">Copy</button>
+        </div>
+        <ul class="notes">
+          <li>Hỗ trợ Ubuntu/Debian (<code>.deb</code>), Fedora/RHEL/openSUSE (<code>.rpm</code>), Arch/Manjaro (<code>.tar.gz</code>) cho cả 32-bit và 64-bit.</li>
+          <li>Tải trước toàn bộ gói với cơ chế retry khi mạng chập chờn; tự kiểm tra và sửa cấu hình Code::Blocks sang <code>-std=c++17 -O2</code>.</li>
+          <li>Sau khi cài xong, gõ <code>cb</code> để mở Code::Blocks tách biệt khỏi terminal (tắt terminal không làm tắt IDE), hoặc <code>cpsetup-cb-check</code> để kiểm chứng.</li>
+        </ul>
+      </div>
+
+      <!-- macOS -->
+      <div class="panel" id="panel-macos">
+        <div class="cmd-box">
+          <code id="cmd-macos-auto">curl -fsSL https://raw.githubusercontent.com/PTK-2411/cpsetup/main/cb/auto | bash</code>
+          <button class="copy-btn" data-copy="cmd-macos-auto">Copy</button>
+        </div>
+        <div class="sub-cmds">
+          <div class="cmd-box">
+            <code id="cmd-mac64">curl -fsSL https://raw.githubusercontent.com/PTK-2411/cpsetup/main/cb/mac64.sh | bash</code>
+            <button class="copy-btn" data-copy="cmd-mac64">Copy Intel</button>
+          </div>
+          <div class="cmd-box">
+            <code id="cmd-macarm64">curl -fsSL https://raw.githubusercontent.com/PTK-2411/cpsetup/main/cb/macarm64.sh | bash</code>
+            <button class="copy-btn" data-copy="cmd-macarm64">Copy Apple Silicon</button>
+          </div>
+        </div>
+        <ul class="notes">
+          <li>Yêu cầu đã cài sẵn <a href="https://brew.sh" target="_blank" rel="noopener">Homebrew</a>.</li>
+          <li>Cài đặt GNU GCC (<code>g++-14</code> / <code>g++-15</code>) thay vì Apple Clang mặc định để tương thích chuẩn bài thi đấu.</li>
+        </ul>
+      </div>
+
+      <!-- Windows -->
+      <div class="panel" id="panel-windows">
+        <div class="cmd-box">
+          <code id="cmd-win">curl -fSL https://raw.githubusercontent.com/PTK-2411/cpsetup/main/cb/auto.bat -o cpsetup-cb.bat &amp;&amp; cpsetup-cb.bat</code>
+          <button class="copy-btn" data-copy="cmd-win">Copy</button>
+        </div>
+        <ul class="notes">
+          <li>Mở Command Prompt (<code>cmd</code>) và dán lệnh trên để chạy.</li>
+          <li>Tự nhận diện Windows 32-bit (<code>win32</code>) hoặc 64-bit (<code>win64</code>), hỗ trợ tải resume (<code>-C -</code>) nếu rớt mạng giữa chừng.</li>
+          <li>Kiểm tra sẵn <code>g++</code> và Code::Blocks nếu máy đã cài trước đó, tránh cài trùng lặp.</li>
+        </ul>
+      </div>
+    </section>
+
+    <h2 class="section-title">Các nhánh công cụ trong CPSetup</h2>
+    <section class="grid">
+      <article class="card">
+        <div class="card-top">
+          <span class="card-code">/cb</span>
+          <span class="status ready">Sẵn sàng</span>
+        </div>
+        <h3>Code::Blocks + C++17</h3>
+        <p>Bộ cài đầy đủ Code::Blocks, <code>g++</code>, <code>gdb</code> kèm cấu hình chuẩn <code>-std=c++17 -O2</code> và lệnh mở nhanh <code>cb</code>.</p>
+      </article>
+
+      <article class="card">
+        <div class="card-top">
+          <span class="card-code">/cpp</span>
+          <span class="status soon">Sắp ra mắt</span>
+        </div>
+        <h3>Chỉ Toolchain C++</h3>
+        <p>Cài gọn nhẹ <code>g++</code>, <code>gdb</code> và build tools chuẩn C++17, không kèm IDE nặng.</p>
+      </article>
+
+      <article class="card">
+        <div class="card-top">
+          <span class="card-code">/vs</span>
+          <span class="status soon">Sắp ra mắt</span>
+        </div>
+        <h3>VS Code + C++17</h3>
+        <p>Visual Studio Code kèm toolchain C++ và bộ cấu hình/extension cơ bản cho lập trình thi đấu.</p>
+      </article>
+
+      <article class="card">
+        <div class="card-top">
+          <span class="card-code">/rs</span>
+          <span class="status soon">Định hướng sau</span>
+        </div>
+        <h3>Rust CP IDE</h3>
+        <p>Môi trường IDE viết bằng Rust tối ưu tốc độ cho học sinh và người dùng nâng cao.</p>
+      </article>
+    </section>
+
+    <footer>
+      <div>© 2026 PTK-2411 — Mã nguồn và cấu hình phát hành theo <a href="https://github.com/PTK-2411/cpsetup/blob/main/LICENSE" target="_blank" rel="noopener">MIT License</a>.</div>
+      <div>Công cụ đi kèm (<code>g++</code>, <code>gdb</code>, <code>Code::Blocks</code>) tuân theo giấy phép nguồn mở tương ứng.</div>
+    </footer>
+  </div>
+
+  <script>
+    (function () {
+      const buttons = document.querySelectorAll('.tab-btn');
+      const panels = document.querySelectorAll('.panel');
+
+      function activateTab(os) {
+        buttons.forEach((btn) => {
+          btn.classList.toggle('active', btn.dataset.os === os);
+        });
+        panels.forEach((panel) => {
+          panel.classList.toggle('active', panel.id === 'panel-' + os);
+        });
+      }
+
+      buttons.forEach((btn) => {
+        btn.addEventListener('click', () => activateTab(btn.dataset.os));
+      });
+
+      const ua = navigator.userAgent.toLowerCase();
+      if (ua.includes('win')) {
+        activateTab('windows');
+      } else if (ua.includes('mac')) {
+        activateTab('macos');
+      } else {
+        activateTab('linux');
+      }
+
+      document.querySelectorAll('.copy-btn').forEach((btn) => {
+        btn.addEventListener('click', async () => {
+          const target = document.getElementById(btn.dataset.copy);
+          if (!target) return;
+          const original = btn.textContent;
+          try {
+            await navigator.clipboard.writeText(target.textContent.trim());
+            btn.textContent = 'Đã copy!';
+            btn.classList.add('copied');
+            setTimeout(() => {
+              btn.textContent = original;
+              btn.classList.remove('copied');
+            }, 1800);
+          } catch (_) {
+            btn.textContent = 'Lỗi copy';
+            setTimeout(() => { btn.textContent = original; }, 1500);
+          }
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
