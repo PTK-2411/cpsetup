@@ -265,42 +265,83 @@
       margin-bottom: 14px;
     }
 
-    .download-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-      gap: 12px;
+    .download-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
       margin-bottom: 40px;
     }
 
-    .dl-btn {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      padding: 14px 16px;
-      background: var(--bg-soft);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      color: var(--text);
-      transition: border-color 0.15s ease, transform 0.15s ease, background 0.15s ease;
+    .dl-panel {
+      display: none;
     }
 
-    .dl-btn:hover {
-      text-decoration: none;
+    .dl-panel.active {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .dl-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 12px 16px;
+      background: var(--bg-soft);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+
+    .dl-row:hover {
       border-color: var(--accent);
       background: #ffffff;
-      transform: translateY(-1px);
+    }
+
+    .dl-row-info {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
     }
 
     .dl-name {
       font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
       font-weight: 700;
-      font-size: 0.95rem;
+      font-size: 0.94rem;
       color: var(--accent-hover);
+      min-width: 170px;
     }
 
     .dl-desc {
-      font-size: 0.84rem;
+      font-size: 0.9rem;
       color: var(--muted);
+    }
+
+    .dl-action {
+      flex-shrink: 0;
+      padding: 6px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: #ffffff;
+      color: var(--text);
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .dl-action:hover {
+      text-decoration: none;
+      border-color: var(--accent);
+      color: var(--accent-hover);
+    }
+
+    .dl-action.disabled {
+      color: var(--muted);
+      background: var(--bg-code);
+      pointer-events: none;
     }
 
     .grid {
@@ -385,10 +426,10 @@
     </header>
 
     <section class="hero">
-      <div class="pill">Chuẩn thi đấu mặc định: C++17 (-std=c++17 -O2)</div>
+      <div class="pill">Đạt tiêu chuẩn của các cuộc thi lập trình thi đấu ở Việt Nam (Code::Blocks và Visual Studio)</div>
       <h1>Cài đặt môi trường C++ thi đấu<br />chỉ với một dòng lệnh</h1>
       <p>
-        Tự động nhận diện hệ điều hành và kiến trúc 32/64-bit, cài đặt đầy đủ <strong>g++</strong>, <strong>gdb</strong> và IDE chuẩn cấu hình cho học sinh luyện thi lập trình thi đấu trên Windows, Linux và macOS.
+        Chuẩn mặc định <strong>C++17 (-std=c++17 -O2)</strong>. Tự động nhận diện hệ điều hành và kiến trúc 32/64-bit, cài đặt đầy đủ <strong>g++</strong>, <strong>gdb</strong> và IDE chuẩn cấu hình trên Windows, Linux và macOS.
       </p>
     </section>
 
@@ -451,48 +492,122 @@
       </div>
     </section>
 
-    <h2 class="section-title">Tải trực tiếp bộ cài (Offline)</h2>
-    <section class="download-grid" aria-label="Tải trực tiếp các file cài đặt">
-      <a class="dl-btn" href="./cb/linux64.deb" download>
-        <span class="dl-name">cb/linux64.deb</span>
-        <span class="dl-desc">Ubuntu / Debian 64-bit (amd64)</span>
-      </a>
-      <a class="dl-btn" href="./cb/linux32.deb" download>
-        <span class="dl-name">cb/linux32.deb</span>
-        <span class="dl-desc">Ubuntu / Debian 32-bit (i386)</span>
-      </a>
-      <a class="dl-btn" href="./cb/linux64.rpm" download>
-        <span class="dl-name">cb/linux64.rpm</span>
-        <span class="dl-desc">Fedora / RHEL / openSUSE 64-bit</span>
-      </a>
-      <a class="dl-btn" href="./cb/linux32.rpm" download>
-        <span class="dl-name">cb/linux32.rpm</span>
-        <span class="dl-desc">Fedora / RHEL / openSUSE 32-bit</span>
-      </a>
-      <a class="dl-btn" href="./cb/linux64.tar.gz" download>
-        <span class="dl-name">cb/linux64.tar.gz</span>
-        <span class="dl-desc">Arch / Manjaro / Linux 64-bit</span>
-      </a>
-      <a class="dl-btn" href="./cb/linux32.tar.gz" download>
-        <span class="dl-name">cb/linux32.tar.gz</span>
-        <span class="dl-desc">Arch / Manjaro / Linux 32-bit</span>
-      </a>
-      <a class="dl-btn" href="./cb/auto" download>
-        <span class="dl-name">cb/auto</span>
-        <span class="dl-desc">Script tự động Linux / macOS</span>
-      </a>
-      <a class="dl-btn" href="./cb/auto.bat" download>
-        <span class="dl-name">cb/auto.bat</span>
-        <span class="dl-desc">Script tự động Windows 32/64-bit</span>
-      </a>
-      <a class="dl-btn" href="./cb/mac64.sh" download>
-        <span class="dl-name">cb/mac64.sh</span>
-        <span class="dl-desc">macOS Intel (x86_64)</span>
-      </a>
-      <a class="dl-btn" href="./cb/macarm64.sh" download>
-        <span class="dl-name">cb/macarm64.sh</span>
-        <span class="dl-desc">macOS Apple Silicon (arm64)</span>
-      </a>
+    <div class="install-header" style="margin-bottom: 14px;">
+      <h2 class="section-title" style="margin-bottom: 0;">Tải trực tiếp bộ cài (Offline)</h2>
+      <div class="tabs" role="tablist" aria-label="Chọn nhánh tải offline">
+        <button class="tab-btn dl-tab-btn active" data-dl="cb" role="tab">Code::Blocks</button>
+        <button class="tab-btn dl-tab-btn" data-dl="vs" role="tab">VS Code</button>
+        <button class="tab-btn dl-tab-btn" data-dl="rs" role="tab">RS</button>
+      </div>
+    </div>
+
+    <section class="download-list" aria-label="Danh sách file tải trực tiếp">
+      <div class="dl-panel active" id="dl-panel-cb">
+        <div class="dl-row">
+          <div class="dl-row-info">
+            <span class="dl-name">cb/linux64.deb</span>
+            <span class="dl-desc">Ubuntu / Debian 64-bit (amd64)</span>
+          </div>
+          <a class="dl-action" href="./cb/linux64.deb" download>Tải xuống</a>
+        </div>
+        <div class="dl-row">
+          <div class="dl-row-info">
+            <span class="dl-name">cb/linux32.deb</span>
+            <span class="dl-desc">Ubuntu / Debian 32-bit (i386)</span>
+          </div>
+          <a class="dl-action" href="./cb/linux32.deb" download>Tải xuống</a>
+        </div>
+        <div class="dl-row">
+          <div class="dl-row-info">
+            <span class="dl-name">cb/linux64.rpm</span>
+            <span class="dl-desc">Fedora / RHEL / openSUSE 64-bit</span>
+          </div>
+          <a class="dl-action" href="./cb/linux64.rpm" download>Tải xuống</a>
+        </div>
+        <div class="dl-row">
+          <div class="dl-row-info">
+            <span class="dl-name">cb/linux32.rpm</span>
+            <span class="dl-desc">Fedora / RHEL / openSUSE 32-bit</span>
+          </div>
+          <a class="dl-action" href="./cb/linux32.rpm" download>Tải xuống</a>
+        </div>
+        <div class="dl-row">
+          <div class="dl-row-info">
+            <span class="dl-name">cb/linux64.tar.gz</span>
+            <span class="dl-desc">Arch / Manjaro / Linux 64-bit</span>
+          </div>
+          <a class="dl-action" href="./cb/linux64.tar.gz" download>Tải xuống</a>
+        </div>
+        <div class="dl-row">
+          <div class="dl-row-info">
+            <span class="dl-name">cb/linux32.tar.gz</span>
+            <span class="dl-desc">Arch / Manjaro / Linux 32-bit</span>
+          </div>
+          <a class="dl-action" href="./cb/linux32.tar.gz" download>Tải xuống</a>
+        </div>
+        <div class="dl-row">
+          <div class="dl-row-info">
+            <span class="dl-name">cb/auto</span>
+            <span class="dl-desc">Script tự động Linux / macOS</span>
+          </div>
+          <a class="dl-action" href="./cb/auto" download>Tải xuống</a>
+        </div>
+        <div class="dl-row">
+          <div class="dl-row-info">
+            <span class="dl-name">cb/auto.bat</span>
+            <span class="dl-desc">Script tự động Windows 32/64-bit</span>
+          </div>
+          <a class="dl-action" href="./cb/auto.bat" download>Tải xuống</a>
+        </div>
+        <div class="dl-row">
+          <div class="dl-row-info">
+            <span class="dl-name">cb/mac64.sh</span>
+            <span class="dl-desc">macOS Intel (x86_64)</span>
+          </div>
+          <a class="dl-action" href="./cb/mac64.sh" download>Tải xuống</a>
+        </div>
+        <div class="dl-row">
+          <div class="dl-row-info">
+            <span class="dl-name">cb/macarm64.sh</span>
+            <span class="dl-desc">macOS Apple Silicon (arm64)</span>
+          </div>
+          <a class="dl-action" href="./cb/macarm64.sh" download>Tải xuống</a>
+        </div>
+      </div>
+
+      <div class="dl-panel" id="dl-panel-vs">
+        <div class="dl-row">
+          <div class="dl-row-info">
+            <span class="dl-name">vs/auto</span>
+            <span class="dl-desc">VS Code + toolchain C++17 (khung script hiện có, đang hoàn thiện gói cài)</span>
+          </div>
+          <a class="dl-action" href="./vs/auto" download>Tải script</a>
+        </div>
+        <div class="dl-row">
+          <div class="dl-row-info">
+            <span class="dl-name">vs/linux64.deb / win64.exe</span>
+            <span class="dl-desc">Bộ cài VS Code + g++ + gdb offline</span>
+          </div>
+          <span class="dl-action disabled">Sắp ra mắt</span>
+        </div>
+      </div>
+
+      <div class="dl-panel" id="dl-panel-rs">
+        <div class="dl-row">
+          <div class="dl-row-info">
+            <span class="dl-name">rs/auto</span>
+            <span class="dl-desc">Rust CP IDE (khung script hiện có, định hướng phát triển sau)</span>
+          </div>
+          <a class="dl-action" href="./rs/auto" download>Tải script</a>
+        </div>
+        <div class="dl-row">
+          <div class="dl-row-info">
+            <span class="dl-name">rs/linux64.deb / win64.exe</span>
+            <span class="dl-desc">Bộ cài Rust CP IDE offline</span>
+          </div>
+          <span class="dl-action disabled">Định hướng sau</span>
+        </div>
+      </div>
     </section>
 
     <h2 class="section-title">Các nhánh công cụ trong Competitive Programming Setup</h2>
@@ -542,7 +657,7 @@
 
   <script>
     (function () {
-      const buttons = document.querySelectorAll('.tab-btn');
+      const buttons = document.querySelectorAll('.tab-btn[data-os]');
       const panels = document.querySelectorAll('.panel');
 
       function activateTab(os) {
@@ -556,6 +671,16 @@
 
       buttons.forEach((btn) => {
         btn.addEventListener('click', () => activateTab(btn.dataset.os));
+      });
+
+      const dlButtons = document.querySelectorAll('.dl-tab-btn[data-dl]');
+      const dlPanels = document.querySelectorAll('.dl-panel');
+      dlButtons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const target = btn.dataset.dl;
+          dlButtons.forEach((b) => b.classList.toggle('active', b.dataset.dl === target));
+          dlPanels.forEach((p) => p.classList.toggle('active', p.id === 'dl-panel-' + target));
+        });
       });
 
       const ua = navigator.userAgent.toLowerCase();
