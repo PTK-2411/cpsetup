@@ -11,7 +11,7 @@ TARGET="${1:-all}"
 
 CB_VER="20.03"
 URL_WIN64="https://sourceforge.net/projects/codeblocks/files/Binaries/${CB_VER}/Windows/codeblocks-${CB_VER}mingw-setup.exe/download"
-URL_WIN32="https://sourceforge.net/projects/codeblocks/files/Binaries/${CB_VER}/Windows/codeblocks-${CB_VER}mingw-32bit-setup.exe/download"
+URL_WIN32="https://sourceforge.net/projects/codeblocks/files/Binaries/${CB_VER}/Windows/32bit/codeblocks-${CB_VER}-32bit-mingw-32bit-setup.exe/download"
 
 download_with_resume() {
     local url="$1"
