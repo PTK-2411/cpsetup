@@ -58,6 +58,31 @@ curl -fSL https://raw.githubusercontent.com/PTK-2411/cpsetup/main/cb/auto.bat -o
 ```
 Script sẽ tự nhận diện `win32` hoặc `win64`, hỗ trợ tải resume (`-C -`) khi mạng chập chờn và kiểm tra lại `g++`, `gdb` sau khi cài đặt.
 
+## Trạng thái kiểm thử ([TEST.md](TEST.md))
+
+| Hệ điều hành | Code::Blocks | VS Code | Rust IDE |
+| :--- | :---: | :---: | :---: |
+| Ubuntu 64-bit | **PASS** | Coming soon | Coming soon |
+| Debian 64-bit | **PASS** | Coming soon | Coming soon |
+| Linux Mint 64-bit | **PASS** | Coming soon | Coming soon |
+| Ubuntu 32-bit | Coming soon | Coming soon | Coming soon |
+| Debian 32-bit | Coming soon | Coming soon | Coming soon |
+| Linux Mint 32-bit | Coming soon | Coming soon | Coming soon |
+| Fedora 64-bit | Coming soon | Coming soon | Coming soon |
+| Fedora 32-bit | Coming soon | Coming soon | Coming soon |
+| RHEL 64-bit | Coming soon | Coming soon | Coming soon |
+| RHEL 32-bit | Coming soon | Coming soon | Coming soon |
+| openSUSE 64-bit | Coming soon | Coming soon | Coming soon |
+| openSUSE 32-bit | Coming soon | Coming soon | Coming soon |
+| Arch Linux 64-bit | Coming soon | Coming soon | Coming soon |
+| Arch Linux 32-bit | Coming soon | Coming soon | Coming soon |
+| Manjaro 64-bit | Coming soon | Coming soon | Coming soon |
+| Manjaro 32-bit | Coming soon | Coming soon | Coming soon |
+| Windows 64-bit | Coming soon | Coming soon | Coming soon |
+| Windows 32-bit | Coming soon | Coming soon | Coming soon |
+| macOS Intel (x86_64) | Coming soon | Coming soon | Coming soon |
+| macOS Apple Silicon (arm64) | Coming soon | Coming soon | Coming soon |
+
 ## Lưu trữ gói nhị phân trên GitHub Releases
 - File nặng (`cb-linux64.deb`, `cb-linux32.deb`, `cb-linux64.rpm`, `cb-linux32.rpm`, `cb-linux64.tar.gz`, `cb-linux32.tar.gz`, `cb-win64.exe`, `cb-win32.exe`) upload lên **GitHub Releases** (`releases/latest/download/...`), không commit vào Git.
 
