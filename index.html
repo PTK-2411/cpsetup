@@ -399,6 +399,62 @@
       font-size: 0.9rem;
     }
 
+    .matrix-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 40px;
+      background: var(--bg);
+    }
+
+    .matrix-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.92rem;
+    }
+
+    .matrix-table th,
+    .matrix-table td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .matrix-table th {
+      background: var(--bg-soft);
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .matrix-table th:not(:first-child),
+    .matrix-table td:not(:first-child) {
+      text-align: center;
+    }
+
+    .matrix-table tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .badge-pass {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      background: var(--success-bg);
+      color: var(--success);
+    }
+
+    .badge-soon {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      background: var(--warn-bg);
+      color: var(--warn);
+    }
+
     footer {
       border-top: 1px solid var(--border);
       padding-top: 22px;
@@ -682,6 +738,79 @@
         <h3>Rust CP IDE</h3>
         <p>Môi trường IDE viết bằng Rust tối ưu tốc độ cho học sinh và người dùng nâng cao.</p>
       </article>
+    </section>
+
+    <div class="install-header" style="margin-bottom: 14px;">
+      <h2 class="section-title" style="margin-bottom: 0;">Trạng thái kiểm thử theo hệ điều hành</h2>
+      <a href="https://github.com/PTK-2411/cpsetup/blob/main/TEST.md" target="_blank" rel="noopener" style="font-size: 0.9rem; font-weight: 600;">Xem TEST.md</a>
+    </div>
+    <section class="matrix-wrap" aria-label="Bảng trạng thái kiểm thử">
+      <table class="matrix-table">
+        <thead>
+          <tr>
+            <th>Hệ điều hành</th>
+            <th>Code::Blocks</th>
+            <th>VS Code</th>
+            <th>Rust IDE</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Ubuntu 64-bit</td>
+            <td><span class="badge-pass">PASS</span></td>
+            <td><span class="badge-soon">Coming soon</span></td>
+            <td><span class="badge-soon">Coming soon</span></td>
+          </tr>
+          <tr>
+            <td>Debian 64-bit</td>
+            <td><span class="badge-pass">PASS</span></td>
+            <td><span class="badge-soon">Coming soon</span></td>
+            <td><span class="badge-soon">Coming soon</span></td>
+          </tr>
+          <tr>
+            <td>Ubuntu / Debian 32-bit</td>
+            <td><span class="badge-soon">Coming soon</span></td>
+            <td><span class="badge-soon">Coming soon</span></td>
+            <td><span class="badge-soon">Coming soon</span></td>
+          </tr>
+          <tr>
+            <td>Fedora / RHEL / openSUSE (32/64-bit)</td>
+            <td><span class="badge-soon">Coming soon</span></td>
+            <td><span class="badge-soon">Coming soon</span></td>
+            <td><span class="badge-soon">Coming soon</span></td>
+          </tr>
+          <tr>
+            <td>Arch / Manjaro / Linux khác (32/64-bit)</td>
+            <td><span class="badge-soon">Coming soon</span></td>
+            <td><span class="badge-soon">Coming soon</span></td>
+            <td><span class="badge-soon">Coming soon</span></td>
+          </tr>
+          <tr>
+            <td>Windows 64-bit</td>
+            <td><span class="badge-soon">Coming soon</span></td>
+            <td><span class="badge-soon">Coming soon</span></td>
+            <td><span class="badge-soon">Coming soon</span></td>
+          </tr>
+          <tr>
+            <td>Windows 32-bit</td>
+            <td><span class="badge-soon">Coming soon</span></td>
+            <td><span class="badge-soon">Coming soon</span></td>
+            <td><span class="badge-soon">Coming soon</span></td>
+          </tr>
+          <tr>
+            <td>macOS Intel (x86_64)</td>
+            <td><span class="badge-soon">Coming soon</span></td>
+            <td><span class="badge-soon">Coming soon</span></td>
+            <td><span class="badge-soon">Coming soon</span></td>
+          </tr>
+          <tr>
+            <td>macOS Apple Silicon (arm64)</td>
+            <td><span class="badge-soon">Coming soon</span></td>
+            <td><span class="badge-soon">Coming soon</span></td>
+            <td><span class="badge-soon">Coming soon</span></td>
+          </tr>
+        </tbody>
+      </table>
     </section>
 
     <footer>
