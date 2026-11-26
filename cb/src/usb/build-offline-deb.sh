@@ -29,14 +29,12 @@ cp "$CB_DIR/linux64.deb" "$BUNDLE_DIR/linux64.deb"
 
 echo "[CPSetup] Dang thu thap danh sach goi phu thuoc (g++, gdb, codeblocks, build-essential)..."
 PKGS="$(apt-cache depends --recurse --no-recommends --no-suggests --no-conflicts --no-breaks --no-replaces --no-enhances \
-    g++ gdb codeblocks build-essential | grep "^\w" | sort -u)"
+    g++ gdb codeblocks build-essential | grep -E '^[a-z0-9][a-z0-9+.-]*$' | sort -u)"
 
-echo "[CPSetup] Dang tai cac goi .deb ve thu muc offline (co the mat 1-2 phut)..."
+echo "[CPSetup] Dang tai $(echo "$PKGS" | wc -l) goi .deb ve thu muc offline (song song 8 luong)..."
 (
     cd "$DEBS_DIR"
-    for pkg in $PKGS; do
-        apt-get download "$pkg" >/dev/null 2>&1 || true
-    done
+    echo "$PKGS" | xargs -P 8 -n 10 sh -c 'apt-get download "$@" >/dev/null 2>&1 || true' _
 )
 
 DEB_COUNT="$(find "$DEBS_DIR" -maxdepth 1 -name '*.deb' | wc -l)"
