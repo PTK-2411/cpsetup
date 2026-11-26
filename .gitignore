@@ -1,5 +1,6 @@
-# Temporary & oversized offline/executable files (>50MB GitHub limit)
+# Temporary, oversized & release-staging files
 *.log
 *.tmp
 *-offline.tar.gz
 *.exe
+cb/cb-*
