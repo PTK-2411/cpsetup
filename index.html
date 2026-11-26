@@ -82,6 +82,7 @@
 
     .nav-links {
       display: flex;
+      align-items: center;
       gap: 18px;
       font-size: 0.95rem;
     }
@@ -93,6 +94,25 @@
 
     .nav-links a:hover {
       color: var(--text);
+    }
+
+    .gh-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .gh-stars {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--bg-soft);
+      color: var(--text);
+      font-size: 0.8rem;
+      font-weight: 600;
     }
 
     .hero {
@@ -475,7 +495,10 @@
         <span>Competitive Programming Setup</span>
       </div>
       <nav class="nav-links">
-        <a href="https://github.com/PTK-2411/cpsetup" target="_blank" rel="noopener">GitHub</a>
+        <a class="gh-link" href="https://github.com/PTK-2411/cpsetup" target="_blank" rel="noopener">
+          <span>GitHub</span>
+          <span class="gh-stars" id="gh-stars" title="Số sao trên GitHub">★ --</span>
+        </a>
         <a href="https://github.com/PTK-2411/cpsetup/releases" target="_blank" rel="noopener">Releases</a>
         <a href="https://github.com/PTK-2411/cpsetup/blob/main/LICENSE" target="_blank" rel="noopener">MIT License</a>
       </nav>
@@ -941,6 +964,18 @@
           }
         });
       });
+
+      const starEl = document.getElementById('gh-stars');
+      if (starEl) {
+        fetch('https://api.github.com/repos/PTK-2411/cpsetup')
+          .then((res) => (res.ok ? res.json() : null))
+          .then((data) => {
+            if (data && typeof data.stargazers_count === 'number') {
+              starEl.textContent = '★ ' + data.stargazers_count.toLocaleString('vi-VN');
+            }
+          })
+          .catch(() => {});
+      }
     })();
   </script>
 </body>
