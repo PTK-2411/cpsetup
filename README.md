@@ -1,4 +1,4 @@
-# CPSetup (`cpsetup.is-a.dev`)
+# CPSetup
 
 Bộ cài đặt chuẩn hóa môi trường lập trình thi đấu **C++17** (`-std=c++17 -O2`) cho học sinh luyện thi lập trình thi đấu trên Windows, Linux và macOS.
 
