@@ -3,4 +3,5 @@
 *.tmp
 *-offline.tar.gz
 *.exe
+*.dmg
 cb/cb-*
