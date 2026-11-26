@@ -104,7 +104,7 @@ resolve_package() {
         echo "$local_path"
     else
         local remote_path="$cache_dir/$pkg_name"
-        download_file "$RELEASE_BASE_URL/cb-$pkg_name" "$remote_path"
+        download_file "$RAW_BASE_URL/cb/$pkg_name" "$remote_path"
         echo "$remote_path"
     fi
 }

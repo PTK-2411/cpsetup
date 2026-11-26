@@ -1,7 +1,5 @@
-# Build artifacts & large binary packages (upload to GitHub Releases instead)
+# Temporary & oversized offline/executable files (>50MB GitHub limit)
 *.log
 *.tmp
-*.deb
-*.rpm
+*-offline.tar.gz
 *.exe
-*.tar.gz
