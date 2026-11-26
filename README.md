@@ -1,6 +1,6 @@
 # CPSetup (`cpsetup.is-a.dev`)
 
-Bộ cài đặt chuẩn hóa môi trường lập trình thi đấu **C++17** (`-std=c++17 -O2`) cho học sinh luyện thi HSG9 và Chuyên Tin trên Windows, Linux và macOS.
+Bộ cài đặt chuẩn hóa môi trường lập trình thi đấu **C++17** (`-std=c++17 -O2`) cho học sinh luyện thi lập trình thi đấu trên Windows, Linux và macOS.
 
 ## Quy ước đường dẫn & tên gói
 Mỗi nhánh sử dụng cấu trúc `/<mã ide>/<osbase><bit>.<đuôi>` và `/<mã ide>/auto`:
