@@ -4,14 +4,15 @@ setlocal enabledelayedexpansion
 REM CPSetup - Code::Blocks + C++17 Auto Installer (Windows 32/64-bit)
 REM Usage: cb\auto.bat
 
-set "BASE_URL=https://cpsetup.is-a.dev"
-if not "%CPSETUP_BASE_URL%"=="" set "BASE_URL=%CPSETUP_BASE_URL%"
+set "RELEASE_URL=https://github.com/PTK-2411/cpsetup/releases/latest/download"
+if not "%CPSETUP_RELEASE_URL%"=="" set "RELEASE_URL=%CPSETUP_RELEASE_URL%"
 
 set "ARCH=32"
 if /i "%PROCESSOR_ARCHITECTURE%"=="AMD64" set "ARCH=64"
 if /i "%PROCESSOR_ARCHITEW6432%"=="AMD64" set "ARCH=64"
 
 set "PKG_NAME=win%ARCH%.exe"
+set "ASSET_NAME=cb-%PKG_NAME%"
 echo [CPSetup] Phat hien Windows %ARCH%-bit (/cb/%PKG_NAME%).
 
 set "HAS_GPP=0"
@@ -31,17 +32,17 @@ if exist "%~dp0%PKG_NAME%" (
     goto :verify
 )
 
-echo [CPSetup] Dang tai %BASE_URL%/cb/%PKG_NAME% (ho tro resume khi mang chap chon)...
+echo [CPSetup] Dang tai %RELEASE_URL%/%ASSET_NAME% (ho tro resume khi mang chap chon)...
 set "CACHE_DIR=%LOCALAPPDATA%\CPSetup\cache"
 if not exist "%CACHE_DIR%" mkdir "%CACHE_DIR%"
-set "TMP_EXE=%CACHE_DIR%\%PKG_NAME%"
-curl -fSL -C - --retry 5 --retry-delay 2 "%BASE_URL%/cb/%PKG_NAME%" -o "%TMP_EXE%"
+set "TMP_EXE=%CACHE_DIR%\%ASSET_NAME%"
+curl -fSL -C - --retry 5 --retry-delay 2 "%RELEASE_URL%/%ASSET_NAME%" -o "%TMP_EXE%"
 if errorlevel 1 (
-    echo [CPSetup] Loi: Tai %PKG_NAME% chua hoan tat. Chay lai cb\auto.bat de tai tiep phan con lai. >&2
+    echo [CPSetup] Loi: Tai %ASSET_NAME% chua hoan tat. Chay lai cb\auto.bat de tai tiep phan con lai. >&2
     exit /b 1
 )
 
-echo [CPSetup] Dang cai dat %PKG_NAME%...
+echo [CPSetup] Dang cai dat %ASSET_NAME%...
 start /wait "" "%TMP_EXE%"
 
 :verify

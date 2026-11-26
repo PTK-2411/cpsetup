@@ -2,10 +2,11 @@
 set -euo pipefail
 
 # CPSetup - Code::Blocks + C++17 Auto Installer (Linux / macOS)
-# Remote usage: curl -fsSL https://cpsetup.is-a.dev/cb/auto | bash
+# Remote usage: curl -fsSL https://raw.githubusercontent.com/PTK-2411/cpsetup/main/cb/auto | bash
 # Local test:   bash cb/auto --local
 
-BASE_URL="${CPSETUP_BASE_URL:-https://cpsetup.is-a.dev}"
+RAW_BASE_URL="${CPSETUP_RAW_URL:-https://raw.githubusercontent.com/PTK-2411/cpsetup/main}"
+RELEASE_BASE_URL="${CPSETUP_RELEASE_URL:-https://github.com/PTK-2411/cpsetup/releases/latest/download}"
 LOCAL_MODE=0
 DRY_RUN=0
 RUN_CHECK=0
@@ -101,7 +102,7 @@ resolve_package() {
         echo "$local_path"
     else
         local remote_path="$cache_dir/$pkg_name"
-        download_file "$BASE_URL/cb/$pkg_name" "$remote_path"
+        download_file "$RELEASE_BASE_URL/cb-$pkg_name" "$remote_path"
         echo "$remote_path"
     fi
 }
@@ -258,7 +259,7 @@ install_macos() {
         tmp_dir="$(mktemp -d)"
         trap 'rm -rf "${tmp_dir:-}"' RETURN
         local mac_script="$tmp_dir/$script_name"
-        download_file "$BASE_URL/cb/$script_name" "$mac_script"
+        download_file "$RAW_BASE_URL/cb/$script_name" "$mac_script"
         if [ "$DRY_RUN" -eq 1 ]; then
             echo "[CPSetup] (--dry-run) Da tai $mac_script"
             return 0

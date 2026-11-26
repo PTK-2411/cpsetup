@@ -31,7 +31,7 @@ cpsetup/
 ### 1. Linux (Ubuntu / Debian, Fedora / RHEL / openSUSE, Arch / Manjaro)
 Chạy lệnh tự nhận diện distro và kiến trúc (`32`/`64`-bit):
 ```bash
-curl -fsSL https://cpsetup.is-a.dev/cb/auto | bash
+curl -fsSL https://raw.githubusercontent.com/PTK-2411/cpsetup/main/cb/auto | bash
 ```
 *(Nếu chạy trực tiếp từ thư mục repo đã clone về máy: `bash cb/auto --local`)*
 
@@ -43,21 +43,20 @@ Sau khi cài xong:
 ### 2. macOS (Intel `x86_64` & Apple Silicon `arm64`)
 Yêu cầu đã cài [Homebrew](https://brew.sh). Chạy lệnh tự nhận diện máy Intel hay Apple Silicon:
 ```bash
-curl -fsSL https://cpsetup.is-a.dev/cb/auto | bash
+curl -fsSL https://raw.githubusercontent.com/PTK-2411/cpsetup/main/cb/auto | bash
 ```
 Hoặc chạy trực tiếp theo từng dòng máy:
-- **Intel (`x86_64`)**: `curl -fsSL https://cpsetup.is-a.dev/cb/mac64.sh | bash`
-- **Apple Silicon (`arm64`)**: `curl -fsSL https://cpsetup.is-a.dev/cb/macarm64.sh | bash`
+- **Intel (`x86_64`)**: `curl -fsSL https://raw.githubusercontent.com/PTK-2411/cpsetup/main/cb/mac64.sh | bash`
+- **Apple Silicon (`arm64`)**: `curl -fsSL https://raw.githubusercontent.com/PTK-2411/cpsetup/main/cb/macarm64.sh | bash`
 
 > **Lưu ý:** Trên macOS, `g++` mặc định là Apple Clang. Bộ cài sẽ cài GNU GCC qua Homebrew (`g++-14` / `g++-15`) để tương thích chuẩn thi đấu.
 
 ### 3. Windows (32-bit & 64-bit)
 Tải và chạy `cb/auto.bat` trong Command Prompt (`cmd`):
 ```bat
-curl -fSL https://cpsetup.is-a.dev/cb/auto.bat -o cpsetup-cb.bat && cpsetup-cb.bat
+curl -fSL https://raw.githubusercontent.com/PTK-2411/cpsetup/main/cb/auto.bat -o cpsetup-cb.bat && cpsetup-cb.bat
 ```
 Script sẽ tự nhận diện `win32` hoặc `win64`, hỗ trợ tải resume (`-C -`) khi mạng chập chờn và kiểm tra lại `g++`, `gdb` sau khi cài đặt.
 
-## Định hướng khi đẩy lên GitHub & `cpsetup.is-a.dev`
-- File nặng (`.deb`, `.exe`, `.rpm`, `.tar.gz`) upload lên **GitHub Releases**, không commit vào Git.
-- Cấu hình routing tại `cpsetup.is-a.dev/<nhom>/<osbase><bit>.<ext>` trỏ thẳng tới asset tương ứng trên GitHub Releases.
+## Lưu trữ gói nhị phân trên GitHub Releases
+- File nặng (`cb-linux64.deb`, `cb-linux32.deb`, `cb-linux64.rpm`, `cb-linux32.rpm`, `cb-linux64.tar.gz`, `cb-linux32.tar.gz`, `cb-win64.exe`, `cb-win32.exe`) upload lên **GitHub Releases** (`releases/latest/download/...`), không commit vào Git.

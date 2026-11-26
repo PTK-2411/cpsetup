@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # CPSetup - Code::Blocks + GNU C++17 Installer for macOS Apple Silicon (arm64)
-# Usage: curl -fsSL https://cpsetup.is-a.dev/cb/macarm64.sh | bash
+# Usage: curl -fsSL https://raw.githubusercontent.com/PTK-2411/cpsetup/main/cb/macarm64.sh | bash
 
 if [ "$(uname -s)" != "Darwin" ] || [ "$(uname -m)" != "arm64" ]; then
     echo "[CPSetup] Loi: Script nay danh cho macOS Apple Silicon (arm64). He thong hien tai: $(uname -s) $(uname -m)." >&2
