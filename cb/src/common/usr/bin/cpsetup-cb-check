@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+PASS=1
+
+check_cmd() {
+    local cmd="$1"
+    if command -v "$cmd" >/dev/null 2>&1; then
+        local ver=""
+        if [ "$cmd" = "codeblocks" ]; then
+            if command -v dpkg-query >/dev/null 2>&1; then
+                ver="$(dpkg-query -W -f='${Version}' codeblocks 2>/dev/null || true)"
+            elif command -v rpm >/dev/null 2>&1; then
+                ver="$(rpm -q --qf '%{VERSION}-%{RELEASE}' codeblocks 2>/dev/null || true)"
+            elif command -v pacman >/dev/null 2>&1; then
+                ver="$(pacman -Q codeblocks 2>/dev/null | awk '{print $2}' || true)"
+            fi
+        else
+            ver="$("$cmd" --version 2>/dev/null | head -n 1 || true)"
+        fi
+        echo "[OK] $cmd -> $(command -v "$cmd") (${ver:-found})"
+    else
+        echo "[FAIL] Khong tim thay '$cmd' trong PATH." >&2
+        PASS=0
+    fi
+}
+
+echo "=== CPSetup Code::Blocks Environment Check ==="
+check_cmd "g++"
+check_cmd "gdb"
+check_cmd "codeblocks"
+
+if command -v g++ >/dev/null 2>&1; then
+    TMP_DIR="$(mktemp -d)"
+    trap 'rm -rf "$TMP_DIR"' EXIT
+
+    cat > "$TMP_DIR/test_cpp17.cpp" << 'EOF'
+#include <iostream>
+#include <utility>
+
+int main() {
+    auto [a, b] = std::pair<int, int>{17, 2};
+    std::cout << "C++17 OK: " << a << " " << b << "\n";
+    return 0;
+}
+EOF
+
+    if g++ -std=c++17 -O2 -Wall -Wextra "$TMP_DIR/test_cpp17.cpp" -o "$TMP_DIR/test_cpp17"; then
+        OUT="$("$TMP_DIR/test_cpp17")"
+        echo "[OK] Bien dich & chay thu C++17 thanh cong: $OUT"
+    else
+        echo "[FAIL] Loi khi bien dich thu voi g++ -std=c++17 -O2" >&2
+        PASS=0
+    fi
+fi
+
+CONF_FILE="${XDG_CONFIG_HOME:-$HOME/.config}/codeblocks/default.conf"
+if [ -f "$CONF_FILE" ]; then
+    if grep -Eq '\-std=(c|gnu)\+\+17' "$CONF_FILE" && grep -q '\-O2' "$CONF_FILE"; then
+        echo "[OK] Cau hinh Code::Blocks chuan C++17 (-O2): $CONF_FILE"
+    else
+        echo "[WARN] Cau hinh Code::Blocks chua co -std=c++17 / -O2 (chay 'cpsetup-cb-config' de tu sua)."
+        PASS=0
+    fi
+else
+    echo "[WARN] Chua co $CONF_FILE (chay 'cpsetup-cb-config' de tao)."
+    PASS=0
+fi
+
+if [ "$PASS" -eq 1 ]; then
+    echo "=== KET QUA: DAT (READY FOR C++17) ==="
+    exit 0
+else
+    echo "=== KET QUA: CO LOI CAN KIEM TRA ===" >&2
+    exit 1
+fi

@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+set -euo pipefail
+echo "[CPSetup] Nhanh rs/auto (Rust IDE cho CP) dang trong lo trinh phat trien."

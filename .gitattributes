@@ -1,0 +1,7 @@
+* text=auto eol=lf
+*.sh text eol=lf
+auto text eol=lf
+*.bat text eol=crlf
+*.deb binary
+*.tar.gz binary
+*.exe binary

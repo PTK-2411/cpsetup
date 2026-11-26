@@ -1,0 +1,7 @@
+# Build artifacts & large binary packages (upload to GitHub Releases instead)
+*.log
+*.tmp
+*.deb
+*.rpm
+*.exe
+*.tar.gz

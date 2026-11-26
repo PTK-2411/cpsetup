@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [ ! -x /usr/bin/codeblocks ]; then
+    echo "[CPSetup] Khong tim thay /usr/bin/codeblocks." >&2
+    exit 1
+fi
+
+# Detach Code::Blocks completely from the terminal session
+nohup setsid /usr/bin/codeblocks "$@" >/dev/null 2>&1 </dev/null &

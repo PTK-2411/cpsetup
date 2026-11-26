@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+set -euo pipefail
+echo "[CPSetup] Nhanh cpp/auto (chi toolchain g++/gdb C++17) se duoc trien khai tiep theo."

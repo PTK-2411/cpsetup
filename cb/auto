@@ -1,0 +1,277 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# CPSetup - Code::Blocks + C++17 Auto Installer (Linux / macOS)
+# Remote usage: curl -fsSL https://cpsetup.is-a.dev/cb/auto | bash
+# Local test:   bash cb/auto --local
+
+BASE_URL="${CPSETUP_BASE_URL:-https://cpsetup.is-a.dev}"
+LOCAL_MODE=0
+DRY_RUN=0
+RUN_CHECK=0
+
+for arg in "$@"; do
+    case "$arg" in
+        --local) LOCAL_MODE=1 ;;
+        --dry-run) DRY_RUN=1 ;;
+        --check) RUN_CHECK=1 ;;
+        -h|--help)
+            echo "CPSetup Code::Blocks Auto Installer"
+            echo "Usage: bash cb/auto [--local] [--dry-run] [--check]"
+            exit 0
+            ;;
+        *)
+            echo "[CPSetup] Tham so khong hop le: $arg" >&2
+            exit 1
+            ;;
+    esac
+done
+
+SCRIPT_DIR=""
+if [ -n "${BASH_SOURCE[0]:-}" ] && [ -f "${BASH_SOURCE[0]}" ]; then
+    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    if [ -d "$SCRIPT_DIR/src" ] && [ "$LOCAL_MODE" -eq 0 ]; then
+        LOCAL_MODE=1
+    fi
+fi
+
+detect_os() {
+    case "$(uname -s)" in
+        Linux*)  echo "linux" ;;
+        Darwin*) echo "macos" ;;
+        *)
+            echo "[CPSetup] Loi: He dieu hanh '$(uname -s)' chua duoc ho tro." >&2
+            echo "[CPSetup] Neu ban dung Windows, hay dung cb/auto.bat." >&2
+            exit 1
+            ;;
+    esac
+}
+
+detect_arch() {
+    local machine
+    machine="$(uname -m)"
+    case "$machine" in
+        x86_64|amd64) echo "64" ;;
+        i386|i686)    echo "32" ;;
+        arm64|aarch64) echo "arm64" ;;
+        *)
+            echo "[CPSetup] Loi: Kien truc CPU '$machine' chua duoc ho tro." >&2
+            exit 1
+            ;;
+    esac
+}
+
+run_privileged() {
+    if [ "$(id -u)" -eq 0 ]; then
+        "$@"
+    elif command -v sudo >/dev/null 2>&1; then
+        sudo "$@"
+    else
+        echo "[CPSetup] Loi: Can quyen root hoac 'sudo' de cai dat goi he thong." >&2
+        exit 1
+    fi
+}
+
+download_file() {
+    local url="$1"
+    local dest="$2"
+    echo "[CPSetup] Dang tai $url ..."
+    if command -v curl >/dev/null 2>&1; then
+        curl -fSL -C - --retry 5 --retry-delay 2 --connect-timeout 15 "$url" -o "$dest"
+    elif command -v wget >/dev/null 2>&1; then
+        wget -c --tries=5 --waitretry=2 --timeout=15 -qO "$dest" "$url"
+    else
+        echo "[CPSetup] Loi: Can 'curl' hoac 'wget' de tai goi cai dat." >&2
+        exit 1
+    fi
+}
+
+resolve_package() {
+    local pkg_name="$1"
+    local build_cmd="$2"
+    local cache_dir="${XDG_CACHE_HOME:-$HOME/.cache}/cpsetup/cb"
+    mkdir -p "$cache_dir"
+
+    if [ "$LOCAL_MODE" -eq 1 ] && [ -n "$SCRIPT_DIR" ]; then
+        local local_path="$SCRIPT_DIR/$pkg_name"
+        if [ ! -f "$local_path" ]; then
+            echo "[CPSetup] Chua thay $local_path -> dang build tu source local..."
+            eval "$build_cmd"
+        fi
+        echo "$local_path"
+    else
+        local remote_path="$cache_dir/$pkg_name"
+        download_file "$BASE_URL/cb/$pkg_name" "$remote_path"
+        echo "$remote_path"
+    fi
+}
+
+finish_linux_install() {
+    if command -v cpsetup-cb-config >/dev/null 2>&1; then
+        cpsetup-cb-config
+    fi
+    echo "[CPSetup] Cai dat hoan tat! Go 'cb' de mo Code::Blocks (tat terminal khong bi tat IDE)."
+
+    if [ "$RUN_CHECK" -eq 1 ] && command -v cpsetup-cb-check >/dev/null 2>&1; then
+        cpsetup-cb-check
+    fi
+}
+
+install_linux_deb() {
+    local bits="$1"
+    local tmp_dir
+    tmp_dir="$(mktemp -d)"
+    trap 'rm -rf "${tmp_dir:-}"' RETURN
+
+    local pkg_name="linux${bits}.deb"
+    local deb_path
+    deb_path="$(resolve_package "$pkg_name" "bash \"$SCRIPT_DIR/src/linux-deb/build-deb.sh\" \"$bits\"" "$tmp_dir")"
+
+    echo "[CPSetup] San sang cai dat goi: $deb_path"
+    if [ "$DRY_RUN" -eq 1 ]; then
+        echo "[CPSetup] (--dry-run) Bo qua buoc apt-get update & install."
+        return 0
+    fi
+
+    local apt_log="$tmp_dir/apt.log"
+    echo "[CPSetup] Dang cap nhat danh sach goi (apt-get update)..."
+    run_privileged apt-get update
+
+    # Pre-download Code::Blocks + toolchain with retries so unstable network won't break install
+    echo "[CPSetup] Dang tai truoc cac goi Code::Blocks, g++, gdb ve may..."
+    local attempt=1
+    local max_attempts=3
+    while [ "$attempt" -le "$max_attempts" ]; do
+        if run_privileged env DEBIAN_FRONTEND=noninteractive apt-get install -y --download-only -qq "$deb_path" >"$apt_log" 2>&1; then
+            break
+        fi
+        if [ "$attempt" -eq "$max_attempts" ]; then
+            echo "[CPSetup] Loi khi tai goi qua mang. Chi tiet:" >&2
+            cat "$apt_log" >&2
+            exit 1
+        fi
+        echo "[CPSetup] Mang chap chon, thu tai lai lan $((attempt + 1))/$max_attempts..."
+        attempt=$((attempt + 1))
+        sleep 2
+    done
+
+    if [ -t 1 ] && command -v clear >/dev/null 2>&1; then
+        clear
+    fi
+
+    echo "[CPSetup] Dang cai dat Code::Blocks + g++ + gdb..."
+    if ! run_privileged env DEBIAN_FRONTEND=noninteractive apt-get install -y --reinstall -qq "$deb_path" >"$apt_log" 2>&1; then
+        echo "[CPSetup] Loi khi cai dat goi. Chi tiet:" >&2
+        cat "$apt_log" >&2
+        exit 1
+    fi
+    finish_linux_install
+}
+
+install_linux_rpm() {
+    local bits="$1"
+    local tmp_dir
+    tmp_dir="$(mktemp -d)"
+    trap 'rm -rf "${tmp_dir:-}"' RETURN
+
+    local pkg_name="linux${bits}.rpm"
+    local rpm_path
+    rpm_path="$(resolve_package "$pkg_name" "bash \"$SCRIPT_DIR/src/linux-rpm/build-rpm.sh\" \"$bits\"" "$tmp_dir")"
+
+    echo "[CPSetup] San sang cai dat goi: $rpm_path"
+    if [ "$DRY_RUN" -eq 1 ]; then
+        echo "[CPSetup] (--dry-run) Bo qua buoc rpm install."
+        return 0
+    fi
+
+    if command -v dnf >/dev/null 2>&1; then
+        run_privileged dnf install -y "$rpm_path"
+    elif command -v yum >/dev/null 2>&1; then
+        run_privileged yum install -y "$rpm_path"
+    elif command -v zypper >/dev/null 2>&1; then
+        run_privileged zypper --non-interactive install --allow-unsigned-rpm "$rpm_path"
+    else
+        run_privileged rpm -Uvh --replacepkgs "$rpm_path"
+    fi
+    finish_linux_install
+}
+
+install_linux_targz() {
+    local bits="$1"
+    local tmp_dir
+    tmp_dir="$(mktemp -d)"
+    trap 'rm -rf "${tmp_dir:-}"' RETURN
+
+    local pkg_name="linux${bits}.tar.gz"
+    local tgz_path
+    tgz_path="$(resolve_package "$pkg_name" "bash \"$SCRIPT_DIR/src/linux-targz/build-targz.sh\" \"$bits\"" "$tmp_dir")"
+
+    echo "[CPSetup] San sang cai dat goi: $tgz_path"
+    if [ "$DRY_RUN" -eq 1 ]; then
+        echo "[CPSetup] (--dry-run) Bo qua buoc giai nen & install.sh."
+        return 0
+    fi
+
+    tar -xzf "$tgz_path" -C "$tmp_dir"
+    bash "$tmp_dir/cpsetup-cb-linux${bits}/install.sh"
+    if [ "$RUN_CHECK" -eq 1 ] && command -v cpsetup-cb-check >/dev/null 2>&1; then
+        cpsetup-cb-check
+    fi
+}
+
+install_linux() {
+    local bits="$1"
+    if [ "$bits" != "64" ] && [ "$bits" != "32" ]; then
+        echo "[CPSetup] Loi: Linux hien ho tro kien truc 32/64-bit (x86_64/i686). Phat hien: $bits." >&2
+        exit 1
+    fi
+
+    if command -v apt-get >/dev/null 2>&1 && command -v dpkg >/dev/null 2>&1; then
+        install_linux_deb "$bits"
+    elif command -v dnf >/dev/null 2>&1 || command -v yum >/dev/null 2>&1 || command -v zypper >/dev/null 2>&1 || command -v rpm >/dev/null 2>&1; then
+        install_linux_rpm "$bits"
+    else
+        install_linux_targz "$bits"
+    fi
+}
+
+install_macos() {
+    local arch="$1"
+    local script_name=""
+    case "$arch" in
+        64)    script_name="mac64.sh" ;;
+        arm64) script_name="macarm64.sh" ;;
+        *)
+            echo "[CPSetup] Loi: macOS khong ho tro kien truc '$arch'." >&2
+            exit 1
+            ;;
+    esac
+
+    if [ "$LOCAL_MODE" -eq 1 ] && [ -n "$SCRIPT_DIR" ] && [ -f "$SCRIPT_DIR/$script_name" ]; then
+        if [ "$DRY_RUN" -eq 1 ]; then
+            echo "[CPSetup] (--dry-run) Se chay $SCRIPT_DIR/$script_name"
+            return 0
+        fi
+        bash "$SCRIPT_DIR/$script_name"
+    else
+        local tmp_dir
+        tmp_dir="$(mktemp -d)"
+        trap 'rm -rf "${tmp_dir:-}"' RETURN
+        local mac_script="$tmp_dir/$script_name"
+        download_file "$BASE_URL/cb/$script_name" "$mac_script"
+        if [ "$DRY_RUN" -eq 1 ]; then
+            echo "[CPSetup] (--dry-run) Da tai $mac_script"
+            return 0
+        fi
+        bash "$mac_script"
+    fi
+}
+
+OS="$(detect_os)"
+ARCH="$(detect_arch)"
+echo "[CPSetup] Phat hien he thong: OS=$OS, ARCH=$ARCH (mode=$([ "$LOCAL_MODE" -eq 1 ] && echo local || echo remote))"
+
+case "$OS" in
+    linux) install_linux "$ARCH" ;;
+    macos) install_macos "$ARCH" ;;
+esac

@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+set -euo pipefail
+echo "[CPSetup] Nhanh vs/auto (VS Code + toolchain C++17) se duoc trien khai sau."

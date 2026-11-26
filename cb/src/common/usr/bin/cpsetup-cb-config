@@ -1,0 +1,96 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+TEMPLATE="/usr/share/cpsetup-cb/default.conf.template"
+if [ ! -f "$TEMPLATE" ] && [ -f "/usr/local/share/cpsetup-cb/default.conf.template" ]; then
+    TEMPLATE="/usr/local/share/cpsetup-cb/default.conf.template"
+fi
+CONF_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/codeblocks"
+CONF_FILE="$CONF_DIR/default.conf"
+FORCE=0
+
+if [ "${1:-}" = "--force" ]; then
+    FORCE=1
+fi
+
+if [ ! -f "$TEMPLATE" ]; then
+    echo "[CPSetup] Khong tim thay file mau: $TEMPLATE" >&2
+    exit 1
+fi
+
+extract_compiler_block() {
+    awk '/^[[:space:]]*<compiler>/{flag=1} flag{print} /^[[:space:]]*<\/compiler>/{flag=0}' "$1"
+}
+
+is_config_valid() {
+    local file="$1"
+    grep -q "<CodeBlocksConfig" "$file" || return 1
+    local block
+    block="$(extract_compiler_block "$file")"
+    [ -n "$block" ] || return 1
+    echo "$block" | grep -Eq '\-std=(c|gnu)\+\+17' || return 1
+    echo "$block" | grep -q '\-O2' || return 1
+    echo "$block" | grep -q 'gcc' || return 1
+    return 0
+}
+
+mkdir -p "$CONF_DIR"
+
+if [ ! -f "$CONF_FILE" ]; then
+    cp "$TEMPLATE" "$CONF_FILE"
+    echo "[CPSetup] Da tao moi cau hinh Code::Blocks C++17 tai: $CONF_FILE"
+    exit 0
+fi
+
+if [ "$FORCE" -eq 0 ] && is_config_valid "$CONF_FILE"; then
+    echo "[CPSetup] Cau hinh Code::Blocks hien tai da dat chuan C++17 (-std=c++17 -O2), giu nguyen."
+    exit 0
+fi
+
+BACKUP="$CONF_FILE.bak.$(date +%Y%m%d%H%M%S)"
+cp "$CONF_FILE" "$BACKUP"
+echo "[CPSetup] Phat hien cau hinh chua chuan C++17 -> da sao luu tai: $BACKUP"
+
+if ! grep -q "<CodeBlocksConfig" "$CONF_FILE" || ! grep -q "</CodeBlocksConfig>" "$CONF_FILE"; then
+    cp "$TEMPLATE" "$CONF_FILE"
+    echo "[CPSetup] File cau hinh cu bi hong/khong hop le -> da tao lai chuan tai: $CONF_FILE"
+    exit 0
+fi
+
+TMP_CONF="$(mktemp)"
+TMP_BLOCK="$(mktemp)"
+trap 'rm -f "$TMP_CONF" "$TMP_BLOCK"' EXIT
+extract_compiler_block "$TEMPLATE" > "$TMP_BLOCK"
+
+if grep -q "<compiler>" "$CONF_FILE" && grep -q "</compiler>" "$CONF_FILE"; then
+    # Replace only the <compiler>...</compiler> section, preserving user editor/UI settings
+    awk -v block_file="$TMP_BLOCK" '
+        BEGIN { in_comp = 0; replaced = 0 }
+        /^[[:space:]]*<compiler>/ {
+            if (!replaced) {
+                while ((getline line < block_file) > 0) print line
+                close(block_file)
+                replaced = 1
+            }
+            in_comp = 1
+            next
+        }
+        in_comp && /^[[:space:]]*<\/compiler>/ {
+            in_comp = 0
+            next
+        }
+        !in_comp { print }
+    ' "$CONF_FILE" > "$TMP_CONF"
+else
+    # Insert <compiler>...</compiler> right before </CodeBlocksConfig>
+    awk -v block_file="$TMP_BLOCK" '
+        /<\/CodeBlocksConfig>/ {
+            while ((getline line < block_file) > 0) print line
+            close(block_file)
+        }
+        { print }
+    ' "$CONF_FILE" > "$TMP_CONF"
+fi
+
+mv "$TMP_CONF" "$CONF_FILE"
+echo "[CPSetup] Da tu dong sua khoi <compiler> sang chuan C++17 (-std=c++17 -O2) tai: $CONF_FILE"
